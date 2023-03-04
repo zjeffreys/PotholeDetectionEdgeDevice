@@ -1,0 +1,141 @@
+{% extends "common.html" %}
+{% block content %}
+<!-- -----------------------------------------------------------------------------
+    STYLE
+------------------------------------------------------------------------------- -->
+
+<style>
+.hero_msg{
+    font-family: 'Open Sans', sans-serif;color: #545454; font-weight: 800;
+}
+.rd{
+    border: 1px solid lightgray;
+    border-radius: 6px;
+    background-color: #fcfcfc;
+    padding: 25;
+    background-repeat: no-repeat;
+    
+    background-image: url(/static/imgs/ddback.jpg);
+    background-size: 40%;
+    background-position: top right;
+}
+.rd1{
+    border: 1px solid lightgray;
+    border-radius: 6px;
+    background-color: #fefefe;
+    padding: 25;
+    background-repeat: no-repeat;
+    text-align: center;
+    
+}
+    
+.btn{
+    font-size: small;
+}   
+    
+.drag_leave { border: 0px dashed black; }
+    
+img {
+    max-width: 100%;
+    max-height: 100%;
+    display: block;
+}    
+.hero{
+    margin-top: 60px; height: 550px; overflow: hidden;  
+}
+.bio{
+        padding-right: 25%;
+       
+    }
+
+/* -------------------------------------
+    RESPONSIVE AND MOBILE FRIENDLY STYLESdd
+------------------------------------- */
+@media only screen and (max-width: 640px) {
+    .hero_msg{
+        font-size: 26px;
+        font-weight: 400;
+    }
+    .hero{
+        margin-top: 0;
+    }
+    .hero_img{
+        display: none;
+    }
+    .bio{
+        padding: 0%;
+    }
+  
+
+}
+
+
+</style>
+
+<!-- -----------------------------------------------------------------------------
+    HTML
+------------------------------------------------------------------------------- -->
+
+<div class="container hero" >
+
+    <div class="row" style=" position: relative;">
+        <!--background-->
+        <div class="hero_img" style="position:absolute; left: 0; top: 0; width: 100%; height: 0; padding-top: 56.2225%;
+        padding-bottom: 0; margin-top: 1.6em; margin-bottom: 0.9em; overflow: hidden;
+        border-radius: 8px; will-change: transform;">
+        <iframe loading="lazy" style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; border: none; padding: 0;margin: 0;"
+        src="https:&#x2F;&#x2F;www.canva.com&#x2F;design&#x2F;DAFYSL_S_QA&#x2F;view?embed" allowfullscreen="allowfullscreen" allow="fullscreen">
+        </iframe>
+    </div>
+        <!-- Content -->
+        <div class="col" >
+            <h1 class="hero_msg">Potholes Suck.</h1>
+            <h1 class="hero_msg">Monitoring Them Sucks More.</h1>
+            <h1 class="hero_msg">Automate It With Computer Vision.</h1>
+            <p class="bio">We use cutting-edge computer vision technology to revolutionize the way cities monitor and maintain their roads. Our solution enables cities to efficiently identify and track road damage, including potholes, over time. Additionally, our predictive capabilities allow cities to proactively address potential issues before they become a problem for residents. With our help, cities can ensure safer and smoother roads for all.</p>
+            <a class="btn " style="background-color: #69D84F; color: white; font-weight: bold;" href="demo">View Demo</a>
+
+        </div>
+    </div>
+   
+
+ 
+
+</div>
+<!--- FOOTER -->
+<div style="margin: 0; padding-bottom: 0; width: 100%; border-top: solid lightgray 1px; color: #545454;"  >
+    <div class="text-center">
+        <br>
+        <h4 >Contact Us For Questions</h4>
+        <!-- Facebook -->
+        <i class="fab fa-facebook-f"></i>
+
+        <!-- Twitter -->
+        <i class="fab fa-twitter"></i>
+
+        <!-- Google -->
+        <i class="fab fa-google"></i>
+
+        <!-- Instagram -->
+        <i class="fab fa-instagram"></i>
+
+        <!-- Linkedin -->
+        <i class="fab fa-linkedin-in"></i>
+
+        <!-- Pinterest -->
+        <i class="fab fa-pinterest"></i>
+
+    </div>
+    <div class="text-center" style="">
+        <br>
+        <p>@ Copyright Seattleu Grad Students</p>
+    </div>
+</div>
+
+<!-- -----------------------------------------------------------------------------
+    HTML
+------------------------------------------------------------------------------- -->
+<script>
+
+</script>
+{% endblock %}
