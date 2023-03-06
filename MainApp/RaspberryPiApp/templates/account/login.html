@@ -1,0 +1,98 @@
+{% extends "common.html" %}
+{% load i18n %}
+<title>Sign In</title>
+{% block head_title %}{% trans "Sign In" %} {% endblock %}
+{% block content %}
+
+<style>
+.fw1{
+    width: 100%;
+}
+.fc{
+    max-width: 800px;
+    padding: 0px;
+    border-radius: 6px;
+}
+input{
+    width: 100%;
+    text-align: left;
+    height: 50px;
+    padding: 10px;
+}
+label{
+    margin: 0;
+}
+</style>
+
+<div class="container-fluid" style="z-index: 3000;">
+
+<div class="container-fluid text-center fc"    >
+    <br/><br/>
+<h2 id="head_banner">{% trans "Sign In" %}</h2>
+    <br/><br/>
+    
+<form class="container-fluid text-center fc" id="login_form" method="POST" 
+      action="{% url 'account_login' %}">
+    
+{% csrf_token %}
+  
+    <div class="" style="max-width: 400px;display: inline-table;">
+    {% for field in form %}
+        <div class="fieldWrapper fw1" style="text-align: left; width: 100%;">
+            {{ field.errors }}
+            <label style="font-size: large;">{{ field.label_tag }}</label> 
+            {{ field }}
+        </div>
+    <br/>
+    {% endfor %}
+    
+  {% if redirect_field_value %}
+    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+  {% endif %}
+  <br/>
+  <button class="btn btn-primary" style="width: 300px;; height:48px;" type="submit">{% trans "Sign In" %}</button>
+    <br/>
+    <br/>
+  <a class="" style="" href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
+  <br/>  
+  <br/>  
+  <p>
+      or 
+      <a class=""  style="" href="{% url 'account_signup' %}">{% trans "Create Account?" %}</a>
+    <br/>
+  </p>
+  <p>
+      or 
+      <!-- a class=""  style=""  href='{  % url 'oidc_authentication_init' %}' --> SSO </a>
+    <br/>
+  </p>
+        
+            
+        <p>
+            <br/>
+            By using Geospaces you agree to the 
+            <a href=#> Terms of Service </a> and <a href=#> Privacy Policy </a>
+        </p>
+    </div>
+</form>
+    
+ <!--
+<br/><br/>
+    OR login using: 
+<br/><br/>
+    {% load account socialaccount %}
+
+    {% get_providers as socialaccount_providers %}
+    <ul class="social_providers_list">
+    {% for provider in socialaccount_providers %}
+        <a title="{{provider.name}}" class="btn btn-outline-dark" 
+         href="{% provider_login_url provider.id process=process scope=scope auth_params=auth_params %}">
+            <i class="fab fa-{{provider.name|lower}}" style="width:100px;" id="social_icon"></i>{{provider.name}}</a>
+    {% endfor %}
+    </ul>
+ -->
+    
+</div>
+</div>    
+    
+{% endblock %}

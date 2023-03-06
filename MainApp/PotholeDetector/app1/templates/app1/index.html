@@ -1,0 +1,291 @@
+{% extends "common.html" %}
+{% block content %}
+<!-- -----------------------------------------------------------------------------
+    STYLE
+------------------------------------------------------------------------------- -->
+
+<style>
+.pothole_queue img{
+    max-width: 100px;
+    max-height: 100px;
+    width: 100px;
+    height: 100px;
+}
+.results img{
+    max-width: 200px;
+    max-height: 200px;
+    width: 200px;
+    height: 200px;
+}
+.rd{
+    border: 1px solid lightgray;
+    border-radius: 6px;
+    background-color: #fcfcfc;
+    padding: 25;
+    background-repeat: no-repeat;
+    
+    background-image: url(/static/imgs/ddback.jpg);
+    background-size: 40%;
+    background-position: top right;
+}
+.rd1{
+    border: 1px solid lightgray;
+    border-radius: 6px;
+    background-color: #fefefe;
+    padding: 25;
+    background-repeat: no-repeat;
+    text-align: center;
+    
+}
+    
+.btn{
+    font-size: small;
+}   
+    
+.drag_leave { border: 0px dashed black; }
+    
+img {
+    max-width: 100%;
+    max-height: 100%;
+    display: block;
+}    
+#map { height: 350px; }
+
+</style>
+
+
+<!-- -----------------------------------------------------------------------------
+    HTML
+------------------------------------------------------------------------------- -->
+<div class="container" style="padding: 15px">
+    <p>Contact Us To Get This In Your City! #SmartCity </p>
+    <div id="map" style="border-radius: 15px; overflow: hidden;"></div>
+</div>
+<!------------------ Pothole Query ------------------>
+<div class="container" style="border: solid lightgrey 2px; border-radius: 5px;">
+    <h4>Edge Device Query</h4>
+    <p>These are potholes identified by our edge devices (Grey Markers)</p>
+    <div class="row pothole_queue" id="identified_potholes">
+    </div>
+
+    <a class="btn btn-outline-primary" style= "width: 100%; margin-top: 5px; margin-bottom: 5px;" onclick="handleProcessAllPotholes()"> Process All</a>
+
+</div>
+
+<!------------------ Identified Potholes ------------------>
+<div class="container" style="margin-top: 5px; border: solid lightgrey 2px; border-radius: 5px;">
+    <h4>Identified Potholes</h4>
+    <p> Our RCNN using VGG Model (Yellow = Mild, Orange = Moderate, Red= Severe)</p>
+    <div class="row results" id="results" style="border: 1px solid #ececec; ">
+        Preview
+    </div>
+
+</div>
+<!-- <div class="container" style ="padding: 10px; width: 1024px;" >
+    <div class="row">
+        <div class="col-6" class="rd1">
+            <form id="fileupload" method="post" class="rd" enctype="multipart/form-data" >
+                {% csrf_token %}
+                    <div id="file_drop" class="drag_enter" >
+                        <input id="file_id" class="btn" name="file" type="file"  
+                        style="border: 0px; width: 100%;"
+                        onchange="myhandleFileSelect(this.id)" accept="*" multiple>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <a class="btn btn-outline-primary" style= "width: 100%;" 
+                           onclick="handleUploadClick()"> Process </a>
+                    </div>
+            </form>
+        </div>
+        <div class="col-6 rd1" id=results style="border: 1px solid #ececec; height: 250px;">
+            Preview
+        </div>
+    </div>
+     -->
+    <!------------------ Status ------------------>
+
+    <div id=status> 
+    </div> 
+</div>
+
+
+<!-- -----------------------------------------------------------------------------
+    HTML
+------------------------------------------------------------------------------- -->
+
+
+<script>
+/* Handel map */
+var seattlelatlng = L.latLng(47.608013, -122.335167);
+var map = L.map('map').setView(seattlelatlng, 12);
+L.marker(seattlelatlng).addTo(map)
+    .bindPopup('Use computer vision to automatically monitor potholes')
+    .openPopup();
+/* Icon colors*/
+var greyIcon = L.icon({
+    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-grey.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    tooltipAnchor: [16, -28],
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+    shadowSize: [41, 41],
+    shadowAnchor: [12, 41]
+});
+
+var greenIcon = L.icon({
+    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    tooltipAnchor: [16, -28],
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+    shadowSize: [41, 41],
+    shadowAnchor: [12, 41]
+});
+
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(map);
+/* Handel pothole queue */
+function handlePotholeQueue(){
+    url = '/app1/getPotholeQueue/';
+    var queue_div = document.getElementById("identified_potholes")
+    $.ajax({
+    type: "GET",
+    url: url,
+    success: function(data) {
+        // Parse the JSON data and append the images to the identified_potholes div
+        // console.log("SUCCDESS: ", data.datetime)
+        data = JSON.parse(data);
+        data.forEach(function(item) {
+            var location = L.latLng(item.latitude,item.longitude);
+            L.marker(location, {icon: greyIcon}).addTo(map);
+            var img = "<img src='data:image/" + item.image_type + ";base64," + item.image + "' />";
+            $("#identified_potholes").append(img);
+        });
+    }
+});
+}
+handlePotholeQueue();
+
+
+
+
+
+
+
+/* Handel file selection*/
+function myhandleFileSelect(id){
+    var files = document.getElementById(id).files;
+    
+    if ( files.length > 1 ){
+        return;
+    }
+    var file = files[0];
+    
+    if (file.type.indexOf("image") >= 0 ) {
+        var reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function(e) {
+            $(results).html(`<img class="img" src='${e.target.result}'/>`);
+        };
+    }        
+    else if (file.type.indexOf("text") >= 0 ) {
+        $('#results').html("Text file")
+    }
+    else {
+        $('#results').html("Binary file")
+    }
+}
+// ---------------------------------------------------------------------------------
+/*
+ * This assumes you have a service working
+ */
+function handleUploadClickCB(responseTxt, statusTxt, xhr) {
+    salert("Upload status: " +statusTxt + " : " + responseTxt)
+}
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+function handleProcessAllPotholes() {
+    url = '/app1/processall/';
+
+    // Make an AJAX call to the server
+    $.ajax({
+        url: url,
+        method: 'GET',
+        success: function(data) {
+            alert("SUCCESS")
+            data = JSON.parse(data);
+            data.forEach(function(item) {
+                console.log(item)
+                var imageSrc = 'data:image/' + item.image_type + ';base64,' + item.image;
+                var imageHtml = '<img src="' + imageSrc + '">';
+                $('#results').append(imageHtml);
+                var location = L.latLng(item.latitude,item.longitude);
+                L.marker(location, {icon: greenIcon}).addTo(map);
+            })
+        },
+        error: function(error) {
+            console.log(error);
+        }
+    });
+}
+
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+function handleUploadClick(url) {
+    url = url || '/app1/processfile/';
+    var file_id = document.getElementById("file_id");
+    if ( file_id.files.length <= 0) {
+        salert("No Files Selected!!", 'btn-danger');
+        return;
+    }
+    var formData = new FormData($('form#fileupload')[0]);
+
+    
+    $.ajax({
+        url: url,
+        type: 'POST',
+        data: formData,
+        responseType: 'arraybuffer',
+        success: function(response) {
+            // Update the image tag with the modified image
+            var imgData = 'data:image/jpeg;base64,' + response.image_data;
+            alert(imgData)
+            $('#status').html("<pre>" + "Success!" + "</pre>");
+            $('#results').html(`<img class="img" src="${imgData}"/>`);
+            // $('#results').html(`<img class="img" src="/dynamic/${filename}"/>`);
+            
+            
+        },
+        error: function(response) {
+            salert("Error!!!" + response.responseText, "btn-error");
+        },
+        cache: false,
+        contentType: false,
+        processData: false
+    });
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Not sure why this function wont work
+// May be someday someone will igure it out - please let me know
+//    
+function handleUploadClick1(url) {
+    url = url || '/app1/processfile/';
+    var file_id = document.getElementById("file_id");
+    if ( file_id.files.length <= 0) {
+        salert("No Files Selected!!", 'btn-danger');
+        return;
+    }
+    var formData = new FormData($('form#fileupload')[0]);
+    //var data1 = GET_POSTDATA(formData)
+    
+    $.post(url, formData)
+}
+    
+</script>
+{% endblock %}

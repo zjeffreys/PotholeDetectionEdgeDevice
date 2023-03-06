@@ -1,0 +1,72 @@
+{% extends "common.html" %}
+    
+{% load i18n %}
+
+{% block head_title %}{% trans "Signup" %}{% endblock %}
+{% block head_links %} 
+
+<title>Signup</title>
+
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+<div style1="text-align: center; width: 600px;border:0px solid gray; z-index:1000;">
+<style>
+.fw1{
+    width: 100%;
+}
+.fc{
+    max-width: 100%;
+    padding: 0px;
+    border-radius: 6px;
+}
+input{
+    width: 100%;
+    text-align: left;
+    height: 50px;
+    padding: 10px;
+}
+label{
+    margin: 0;
+}
+</style>
+
+<div class="container-fluid text-center fc"    >
+    <br/><br/>
+    <h2 id="head_banner">{% trans "Sign Up" %}</h2>
+    <p class="exist_account_info">{% blocktrans %}Already have an account? Then please <a href="{{ login_url }}">sign in</a>.{% endblocktrans %}</p>
+    <br/><br/>
+    
+<form class="container-fluid text-center fc" id="signup_form" method="post" action="{% url 'account_signup' %}">
+  {% csrf_token %}
+
+    <div class="" style="max-width: 600px; display: inline-table;">
+    {% for field in form %}
+        <div class="fieldWrapper" style="text-align: left; width: 100%;">
+            {{ field.errors }}
+            <label style="font-size: large;">{{ field.label_tag }}</label> 
+            {{ field }}
+        </div>
+    <br/>
+    {% endfor %}
+
+  {% if redirect_field_value %}
+
+  <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+  
+  {% endif %}
+    <br/>
+
+  <button class="btn btn-primary btn-lg" style="width: 300px;; height:48px;"  type="submit">{% trans "Sign Up" %}</button><br/>
+    </div>
+</form>
+        <p>
+            <br/>
+            By using Geospaces you agree to the 
+            <a href=#> Terms of Service </a> and <a href=#> Privacy Policy </a>
+        </p>
+</div>
+</div>
+</div>
+{% endblock %}

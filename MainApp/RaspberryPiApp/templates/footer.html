@@ -1,0 +1,57 @@
+<style>
+#footer a {
+    color: #bdbdbd;
+}
+</style>
+<footer id="footer" style="background: #acacac !important; position: relative; bottom:0; width:100%;z-index:6; ">
+    <br/>
+    <div class="container" >
+        <div class="row">
+
+            <div class="col-md-3">
+                <div class="widget1">
+                    <h5 class="widgetheading">Our Contact</h5>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="widget">
+                    <h5 class="widgetheading">Quick Links</h5>
+                    <ul class="link-list">
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="widget">
+                    <h5 class="widgetheading">Latest posts</h5>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="widget">
+                    <h5 class="widgetheading">Recent News</h5>
+                    <ul class="link-list">
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="sub-footer" style="background: #bcbcbc !important">
+        <span style="color: black; padding: 0 5 1  50px;">&copy; No right reserved.</span>
+    </div>
+</footer>
+
+
+<script>
+function footerPosition(){
+    //if ( $(document).height() < $(window).height() )
+    //    $('#footer').css('position', 'absolute')
+    //var ft = $('#footer').position().top + $('#footer').height()
+    //if ( $('#pagecontent').height() + 150 > $(window).height() ){
+    if ( (document.body.clientHeight ) < $(window).height() ){
+        $('#footer').css('position', 'relative')
+    }else{
+        $('#footer').css('position', 'fixed')
+    }
+
+}
+$( document ).ready(footerPosition);
+</script>
