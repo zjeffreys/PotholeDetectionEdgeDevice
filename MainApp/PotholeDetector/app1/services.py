@@ -19,6 +19,7 @@ from django.http import JsonResponse
 import concurrent.futures
 import re
 import json
+import shutil
 
 
 
@@ -66,6 +67,50 @@ def view_pothole_queue(request,  **kwargs):
 
 # Inferene Handeler
 def run_inference(image, model):
+    # Set output file path
+    output_file = os.path.join("..", "dynamic", os.path.basename(image))
+    # Check if output file exists and delete it if it does
+    if os.path.isfile(output_file):
+        os.remove(output_file)
+
+    # Load model and image, perform inference, and add labels
+    model_final = tf.keras.models.load_model(model)
+    img = cv2.imread(image)
+    ss = cv2.ximgproc.segmentation.createSelectiveSearchSegmentation()
+    ss.setBaseImage(img)
+    ss.switchToSelectiveSearchFast()
+    ssresults = ss.process()
+    imout = img.copy()
+    for e,result in enumerate(ssresults):
+        if e < 200:
+            x,y,w,h = result
+            timage = imout[y:y+h,x:x+w]
+            resized = cv2.resize(timage, (224,224), interpolation = cv2.INTER_AREA)
+            img = np.expand_dims(resized, axis=0)
+            out= model_final.predict(img)
+            if out[0][0] > 0.60:
+                # Add Labels & Design To Rectangles 
+                label = "Pothole: " + str(round(out[0][0], 2))
+                font = cv2.FONT_HERSHEY_SIMPLEX
+                font_scale = 0.5
+                thickness = 2
+                color = (255, 0, 0)
+                text_size, _ = cv2.getTextSize(label, font, font_scale, thickness)
+                text_x = x + w // 2 - text_size[0] // 2
+                text_y = y - text_size[1] - 5
+                cv2.putText(imout, label, (text_x, text_y), font, font_scale, color, thickness)
+                cv2.rectangle(imout, (x, y), (x+w, y+h), (0, 255, 0), 1, cv2.LINE_AA)
+
+    # Save output image to output_file
+    cv2.imwrite(output_file, imout)
+    print(f"Saving output image to {output_file}")
+    
+    # Return the file location
+    return output_file
+    
+    # Return the file location
+    return output_file
+    ''' #OLD CODE
     image_exists = os.path.isfile(image)
     model_exists = os.path.isfile(model)
     print(f"\nrun_inference(image={image} ({image_exists}), model={model} ({model_exists}))\n")
@@ -110,6 +155,7 @@ def run_inference(image, model):
     
     # Return the file location
     return output_file
+    '''
 
 
 
