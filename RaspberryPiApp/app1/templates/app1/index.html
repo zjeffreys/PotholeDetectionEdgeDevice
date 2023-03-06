@@ -46,8 +46,10 @@ img {
     HTML
 ------------------------------------------------------------------------------- -->
 <div class="container" style="padding: 15px">
-    <p>Contact Us To Get This In Your City! #SmartCity </p>
-    <div id="map" style="border-radius: 15px; overflow: hidden;"></div>
+    <h4>Device Info:</h4>
+    <p><span style="font-weight:500">Device Id:</span> RaspberryPi_000.001_GarbageTruck_Seattle_0131f3 </p>
+    <p><span style="font-weight:500">Type:</span> RaspberryPi 4+ </p>
+    <!-- <div id="map" style="border-radius: 15px; overflow: hidden;"></div> -->
 </div>
 
 
@@ -82,7 +84,7 @@ img {
                         <input name=params id=params  class="input1" > 
                         <br/>
                         <a class="btn btn-outline-primary" style= "width: 100%;" 
-                           onclick="handleUploadClick()"> Process </a>
+                           onclick="handleUploadClick()"> Check Image for Pothole </a>
                     </div>
             </form>
         </div>
@@ -103,17 +105,17 @@ img {
 <script>
 
 /*Map */
-var seattlelatlng = L.latLng(47.608013, -122.335167);
-var map = L.map('map').setView(seattlelatlng, 12);
+// var seattlelatlng = L.latLng(47.608013, -122.335167);
+// var map = L.map('map').setView(seattlelatlng, 12);
 
 
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-}).addTo(map);
+// L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+//     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+// }).addTo(map);
 
-L.marker(seattlelatlng).addTo(map)
-    .bindPopup('Use computer vision to automatically monitor potholes')
-    .openPopup();
+// L.marker(seattlelatlng).addTo(map)
+//     .bindPopup('Use computer vision to automatically monitor potholes')
+//     .openPopup();
 
 
 /* Handel file selection*/
